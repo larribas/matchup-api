@@ -5,11 +5,11 @@ defmodule Matchup.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/events", Matchup do
+  scope "/plans", Matchup do
     pipe_through :api
 
-    post "/", EventsController, :create
-    get "/", EventsController, :search
-    get "/:id", EventsController, :show
+    post "/", PlansController, :create
+    get "/", PlansController, :search
+    get "/:id", PlansController, :show
   end
 end

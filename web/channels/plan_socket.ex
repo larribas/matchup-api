@@ -1,8 +1,8 @@
-defmodule Matchup.EventSocket do
+defmodule Matchup.PlanSocket do
   use Phoenix.Socket
 
   ## Channels
-  channel "event:*", Matchup.EventChannel
+  channel "plan:*", Matchup.PlanChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket

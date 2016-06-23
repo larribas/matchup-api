@@ -18,8 +18,8 @@ defmodule Matchup.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {Matchup, []},
-     applications: [:phoenix, :phoenix_html, :cowboy, :logger,
-                    :phoenix_ecto, :postgrex]]
+     applications: [:phoenix, :cowboy, :logger,
+                    :phoenix_ecto, :sqlite_ecto]]
   end
 
   # Specifies which paths to compile per environment.
@@ -35,7 +35,9 @@ defmodule Matchup.Mixfile do
      {:phoenix_ecto, "~> 2.0"},
      {:phoenix_html, "~> 2.4"},
      {:phoenix_live_reload, "~> 1.0", only: :dev},
-     {:cowboy, "~> 1.0"}]
+     {:cowboy, "~> 1.0"},
+     {:sqlite_ecto, "~> 1.0"}
+   ]
   end
 
   # Aliases are shortcut or tasks specific to the current project.

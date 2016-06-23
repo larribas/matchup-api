@@ -11,18 +11,6 @@ config :logger, level: :warn
 
 # Configure your database
 config :matchup, Matchup.Repo,
-  adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
-  database: "matchup_test",
-  hostname: "localhost",
-  pool: Ecto.Adapters.SQL.Sandbox
-
-# Configure your database
-config :matchup, Matchup.Repo,
-  adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
-  database: "matchup_test",
-  hostname: "localhost",
+  adapter: Sqlite.Ecto,
+  database: "ecto_simple.sqlite3",
   pool: Ecto.Adapters.SQL.Sandbox

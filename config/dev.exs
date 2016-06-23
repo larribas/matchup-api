@@ -33,18 +33,5 @@ config :phoenix, :stacktrace_depth, 20
 
 # Configure your database
 config :matchup, Matchup.Repo,
-  adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
-  database: "matchup_dev",
-  hostname: "localhost",
-  pool_size: 10
-
-# Configure your database
-config :matchup, Matchup.Repo,
-  adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
-  database: "matchup_dev",
-  hostname: "localhost",
-  pool_size: 10
+  adapter: Sqlite.Ecto,
+  database: "test.sqlite3"

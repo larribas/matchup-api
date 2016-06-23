@@ -1,4 +1,4 @@
-defmodule Matchup.EventsController do
+defmodule Matchup.PlansController do
   use Matchup.Web, :controller
 
   def search(conn, _params) do

@@ -1,7 +1,7 @@
 defmodule Matchup.Endpoint do
   use Phoenix.Endpoint, otp_app: :matchup
 
-  socket "/socket", Matchup.EventSocket
+  socket "/socket", Matchup.PlanSocket
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
