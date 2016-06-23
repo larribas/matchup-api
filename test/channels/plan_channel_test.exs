@@ -2,7 +2,7 @@ defmodule Matchup.PlanChannelTest do
   use Matchup.ChannelCase
 
   setup do
-    {:ok, _, socket} = socket("user_id", %{}) |> subscribe_and_join(Matchup.PlanChannel, "plan:dummy_plan")
+    {:ok, _, socket} = socket("user_id", %{}) |> subscribe_and_join(Matchup.PlanChannel, "plan:dummy")
     {:ok, socket: socket}
   end
 

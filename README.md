@@ -25,18 +25,17 @@ Each event has its own nature (its own properties and rules). The application ca
 ## Roadmap
 
 1. [x] Set up application structure
-2. [x] Expose dummy WebSocket API
-3. [ ] Allow switchable logics that handle arbitrary commands, queries and events
-4. [ ] Implement main logic (`CreateEvent`, `SearchEvents`, `SubscribeToEvent`, `UnsubscribeFromEvent`)
-5. [ ] Implement table soccer logic
-6. [ ] Allow configuring the logics depending on user input, using pattern matching
-7. [ ] Persist events in repositories
-    7.1. [ ] Use Redis as a database and get rid of Ecto (deps, models and migrations)
-8. [ ] Deploy application with Docker
-    8.1. [ ] Use environment variables instead of config files
-    8.2. [ ] Dockerize application for dev and prod environments
-9. [ ] Use supervision and concurrency to serve multiple clients fast and reliably
-10. [ ] Launch together with a cool frontend!
+1. [x] Expose dummy WebSocket API
+1. [ ] Implement table soccer logic
+1. [ ] Allow switchable logics that handle arbitrary commands, queries and events
+1. [ ] Allow configuring the logics depending on user input, using pattern matching
+1. [ ] Persist events in repositories
+    1.1. [ ] Use Redis as a database and get rid of Ecto (deps, models and migrations)
+1. [ ] Deploy application with Docker
+    1.1. [ ] Use environment variables instead of config files
+    1.2. [ ] Dockerize application for dev and prod environments
+1. [ ] Use supervision and concurrency to serve multiple clients fast and reliably
+1. [ ] Launch together with a cool frontend!
 
 
 *Even more ideas for the future:*
