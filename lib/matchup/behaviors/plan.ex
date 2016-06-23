@@ -1,16 +1,15 @@
 defmodule Matchup.Behaviors.Plan do
   
-  # TODO Queries: exists? search info
+  # TODO Queries: search info
 
-  def query("exists?", %{"id": id}) do
-    # TODO Only the stored ones exist
-    true
+  def query(other, _params) do
+    {:error, "Query #{other} does not exist"}
   end
 
   # TODO commands: create subscribe unsubscribe cancel
 
-  def command("create", %{"name": name}) do
-    {:ok, [event(:created, %{})]}
+  def command(other, _params) do
+    {:error, "Command #{other} does not exist"}
   end
 
   # TODO Extract to another module

@@ -15,4 +15,16 @@ defmodule Matchup.PlanChannelTest do
     assert_reply ref, :ok, %{"hello" => "there"}
   end
 
+  test "queries are properly delegated", %{socket: socket} do
+    params = %{"param": "something"}
+    ref = push socket, "query:test", params
+    assert_reply ref, :ok, %{"name": "test", "params": params}
+  end
+
+  test "commands are properly delegated", %{socket: socket} do
+    params = %{"param": "something"}
+    ref = push socket, "command:test", params
+    assert_broadcast "test", params
+  end
+
 end
