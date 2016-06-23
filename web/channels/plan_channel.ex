@@ -12,7 +12,7 @@ defmodule Matchup.PlanChannel do
 
   # Queries are handed to the domain, validated and returned to the user
   def handle_in("query:" <> name, payload, socket) do
-    outcome = select_behavior(socket).query(name, payload)
+    outcome = query(socket, name, payload)
     {:reply, outcome, socket}
   end
 
@@ -21,9 +21,9 @@ defmodule Matchup.PlanChannel do
   #  - Otherwise, the error will be sent to the client as a one-to-one reply
   def handle_in("command:" <> name, payload, socket) do
     try do
-      case select_behavior(socket).command(name, payload) do
+      case command(socket, name, payload) do
         {:ok, events} ->
-          for %Event{type: type, params: params} <- events, do: broadcast socket, type, params
+          for %{type: type, params: params} <- events, do: broadcast socket, type, params
           {:noreply, socket}
         {:error, msg} ->
           {:reply, {:error, %{reason: msg}}, socket}
@@ -33,19 +33,26 @@ defmodule Matchup.PlanChannel do
     end
   end
 
-  # Behavior selector for a socket
-  def select_behavior(socket) do
-    # TODO Make this a proper router (dependant on configuration)
-    %{topic: "plan:" <> type} = socket
-    case type do
+  def query(%{topic: "plan:" <> type}, name, payload) do
+    component = case type do
       "table_soccer" ->
-        Matchup.Behaviors.TableSoccer
+        Matchup.TableSoccer.Queries
       "dummy" ->
-        Matchup.Behaviors.Dummy
-      _ ->
-        # TODO Implement generic plan management
-        Matchup.Behaviors.Dummy
+        Matchup.Dummy.Queries
     end
+
+    apply(component, String.to_atom(type), [payload])
+  end
+
+  def command(%{topic: "plan:" <> type}, name, payload) do
+    component = case type do
+      "table_soccer" ->
+        Matchup.TableSoccer.Commands
+      "dummy" ->
+        Matchup.Dummy.Commands
+    end
+
+    apply(component, String.to_atom(type), [payload])
   end
 
 end

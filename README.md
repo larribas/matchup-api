@@ -30,7 +30,7 @@ Each event has its own nature (its own properties and rules). The application ca
 1. [ ] Allow switchable logics that handle arbitrary commands, queries and events
 1. [ ] Allow configuring the logics depending on user input, using pattern matching
 1. [ ] Persist events in repositories
-    1.1. [ ] Use Redis as a database and get rid of Ecto (deps, models and migrations)
+    1.1. [ ] Use Redis as a database
 1. [ ] Deploy application with Docker
     1.1. [ ] Use environment variables instead of config files
     1.2. [ ] Dockerize application for dev and prod environments

@@ -1,4 +1,4 @@
-defmodule Matchup.Repositories.InMemory do
+defmodule Matchup.Shared.Repositories.InMemory do
   
   def create(id, data) do
     # TODO

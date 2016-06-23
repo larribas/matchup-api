@@ -8,9 +8,3 @@ config :matchup, Matchup.Endpoint,
 
 # Print only warnings and errors during test
 config :logger, level: :warn
-
-# Configure your database
-config :matchup, Matchup.Repo,
-  adapter: Sqlite.Ecto,
-  database: "ecto_simple.sqlite3",
-  pool: Ecto.Adapters.SQL.Sandbox

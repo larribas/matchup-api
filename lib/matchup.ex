@@ -9,8 +9,6 @@ defmodule Matchup do
     children = [
       # Start the endpoint when the application starts
       supervisor(Matchup.Endpoint, []),
-      # Start the Ecto repository
-      supervisor(Matchup.Repo, []),
       # Here you could define other workers and supervisors as children
       # worker(Matchup.Worker, [arg1, arg2, arg3]),
     ]

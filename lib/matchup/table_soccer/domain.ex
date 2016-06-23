@@ -1,68 +1,5 @@
-defmodule Matchup.Behaviors.TableSoccer do
+defmodule Matchup.TableSoccer.Domain do
   
-  # We need to
-  #  - remove the game when the last person unsubscribes
-
-  #
-  # QUERIES
-  #
-
-  def query("search", _params) do
-    games = repository.search
-    {:ok, games}
-  end
-
-
-  #
-  # COMMANDS
-  #
-
-  def command("create", %{"name" => name}) do
-    {game, events} = create(name)
-    repository.create(game["id"], game)
-
-    {:ok, events}
-  end
-
-  def command("join", %{"id" => id, "username" => username}) do
-    {game, events} = {repository.read(id), []}
-        |> exists!
-        |> join(username)
-
-    if length(game["players"]) == 4 do
-      {game, events} = {game, events} |> start
-      scheduler.delay("free table", %{}, 1000 * 60 * 20)
-    end
-
-    repository.update(id, game)
-    {:ok, events}
-  end
-
-  def command("leave", %{"id" => id, "username" => username}) do
-    {game, events} = {repository.read(id), []}
-        |> exists!
-        |> leave(username)
-        |> cancel_if_empty
-
-    repository.update(id, game)
-    {:ok, events}
-  end
-
-  def command("free table", _) do
-    case repository.search(%{"status" => "playing"}) do
-      [game | others] ->
-        {game, events} = {game, []} |> finish
-        repository.update(game["id"], game)
-        {:ok, events}
-      _ ->
-        {:ok, []}
-    end
-  end
-
-  #
-  # DOMAIN
-  #
-
   def create(name) do
     game = %{
       "id" => UUID.uuid4,
@@ -115,20 +52,5 @@ defmodule Matchup.Behaviors.TableSoccer do
     {game, events}    
   end
 
-
-
-  #
-  # INTERNAL (TODO: move to config)
-  #
-
-  def repository do
-    # TODO Choose depending on configuration
-    Matchup.Repositories.InMemory
-  end
-
-  def scheduler do
-    # TODO Choose depending on configuration
-    Matchup.Schedulers.InMemory
-  end
 
 end
