@@ -2,8 +2,9 @@ defmodule Matchup.TableSoccer do
 
   def port(name) do
     case name do
-      :repository -> Matchup.Shared.Repositories.InMemory
-      :scheduler -> Matchup.Shared.Schedulers.InMemory
+      :repository -> Matchup.Shared.Repository.InMemory
+      :scheduler -> Matchup.Shared.Scheduler.InMemory
+      :event_log -> Matchup.Shared.EventLog.InMemory
     end
   end
   

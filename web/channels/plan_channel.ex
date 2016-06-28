@@ -20,16 +20,12 @@ defmodule Matchup.PlanChannel do
   #  - If successful, the resulting events will be broadcasted
   #  - Otherwise, the error will be sent to the client as a one-to-one reply
   def handle_in("command:" <> name, payload, socket) do
-    try do
-      case command(socket, name, payload) do
-        {:ok, events} ->
-          for %{type: type, params: params} <- events, do: broadcast socket, type, params
-          {:noreply, socket}
-        {:error, msg} ->
-          {:reply, {:error, %{reason: msg}}, socket}
-      end
-    catch
-      msg -> {:error, msg}
+    case command(socket, name, payload) do
+      {:ok, events} ->
+        for %{type: type, params: params} <- events, do: broadcast socket, type, params
+        {:noreply, socket}
+      {:error, msg} ->
+        {:reply, {:error, %{reason: msg}}, socket}
     end
   end
 

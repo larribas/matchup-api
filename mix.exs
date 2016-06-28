@@ -18,7 +18,7 @@ defmodule Matchup.Mixfile do
      applications: [:phoenix, :cowboy, :logger]]
   end
 
-  defp elixirc_paths(:test), do: ["lib", "web", "test/support"]
+  defp elixirc_paths(:test), do: ["lib", "web", "test", "test/support"]
   defp elixirc_paths(_),     do: ["lib", "web"]
 
   defp deps do

@@ -1,48 +1,56 @@
 defmodule Matchup.TableSoccer.Commands do
+  import Matchup.TableSoccer
+  alias Matchup.TableSoccer.Domain, as: Domain
 
   def create(%{"name" => name}) do
-    {game, events} = create(name)
+    {game, events} = Domain.create(name)
 
-    # TODO Publish events
+    port(:event_log).publish("table_soccer_events", events)
     {:ok, game, events}
   end
 
   def join(%{"id" => id, "username" => username}) do
-    {game, events} = {Matchup.TableSoccer.port(:repository).read(id), []}
-        |> exists!
-        |> join(username)
+    try do
+      {game, events} = {port(:repository).read(id), []} |> Domain.join(username)
 
-    if length(game["players"]) == 4 do
-      {game, events} = {game, events} |> start
-      Matchup.TableSoccer.port(:scheduler).delay("free table", %{}, 1000 * 60 * 20)
+      if length(game["players"]) == 4 do
+        {game, events} = {game, events} |> Domain.start
+        port(:scheduler).delay("free table", %{}, 1000 * 60 * 20)
+      end
+
+      port(:event_log).publish("table_soccer_events", events)
+      {:ok, game, events}
+    catch
+      msg -> {:error, msg}
     end
-
-    # TODO Publish events
-    {:ok, game, events}
   end
 
   def leave(%{"id" => id, "username" => username}) do
-    {game, events} = {Matchup.TableSoccer.port(:repository).read(id), []}
-        |> exists!
-        |> leave(username)
+    try do
+      {game, events} = {port(:repository).read(id), []} |> Domain.leave(username)
     
-    if length(game["players"]) == 0 do
-      {game, events} = {game, events} |> cancel
-    end
+      if length(game["players"]) == 0, do: {game, events} = {game, events} |> Domain.finish
 
-    # TODO Publish events
-    {:ok, game, events}
+      port(:event_log).publish("table_soccer_events", events)
+      {:ok, game, events}
+    catch
+      msg -> {:error, msg}
+    end
   end
 
   def free_table(%{}) do
-    games_being_played = Matchup.TableSoccer.port(:repository).search(%{"status" => "playing"})
-    {game, events} = case games_being_played do
-      [game | others] -> {game, []} |> finish
-      _ -> {nil, []}
-    end
+    try do
+      games_being_played = port(:repository).search(%{"status" => "playing"})
+      {game, events} = case games_being_played do
+        [game | others] -> {game, []} |> Domain.finish
+        _ -> {nil, []}
+      end
 
-    # TODO Publish events
-    {:ok, game, events}
+      port(:event_log).publish("table_soccer_events", events)
+      {:ok, game, events}
+    catch
+      msg -> {:error, msg}
+    end
   end
   
 end
