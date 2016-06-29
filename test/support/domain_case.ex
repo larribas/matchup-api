@@ -16,7 +16,12 @@ defmodule Matchup.DomainCase do
         assert length(events) == length(types)
         assert Enum.map(events, fn ev -> ev["type"] end) == types
       end
+
+      def assert_contain_exactly(actual, expected) do
+        assert length(expected) == length(actual)
+        for item <- expected, do: assert Enum.member?(actual, item)
+      end
     end
   end
-    
+
 end

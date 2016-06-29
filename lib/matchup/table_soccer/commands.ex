@@ -15,7 +15,9 @@ defmodule Matchup.TableSoccer.Commands do
 
       if length(game["players"]) == 4 do
         {game, events} = {game, events} |> Domain.start
-        port(:scheduler).delay("free table", %{}, 1000 * 60 * 20)
+
+        # Free table automatically in 20 minutes
+        port(:scheduler).delay(Matchup.TableSoccer.Commands, :free_table, [%{"id" => id}], 1000 * 60 * 20)
       end
 
       port(:event_log).publish("table_soccer_events", events)
@@ -38,9 +40,13 @@ defmodule Matchup.TableSoccer.Commands do
     end
   end
 
-  def free_table(%{}) do
+  def free_table(params) do
     try do
-      games_being_played = port(:repository).search(%{"status" => "playing"})
+      games_being_played = case params do
+        %{"id" => id} -> port(:repository).search(%{"id" => id, "status" => "playing"})
+        _ -> port(:repository).search(%{"status" => "playing"})
+      end
+
       {game, events} = case games_being_played do
         [game | others] -> {game, []} |> Domain.finish
         _ -> {nil, []}
