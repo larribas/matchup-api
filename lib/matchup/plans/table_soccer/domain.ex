@@ -1,4 +1,5 @@
-defmodule Matchup.TableSoccer.Domain do
+defmodule Matchup.Plans.TableSoccer.Domain do
+  alias Matchup.Shared.Event, as: Event
   
   def create(name, username) do
     game = %{

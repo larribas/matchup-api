@@ -1,10 +1,10 @@
-defmodule Matchup.TableSoccer.DomainTest do
+defmodule Matchup.Plans.TableSoccer.DomainTest do
   use ExUnit.Case, async: true
   use Matchup.DomainCase
   
-  import Matchup.TableSoccer.Support.Factory
+  import Matchup.Plans.TableSoccer.Support.Factory
 
-  alias Matchup.TableSoccer.Domain, as: Domain
+  alias Matchup.Plans.TableSoccer.Domain, as: Domain
 
   test "create game" do
     {game, events} = Domain.create("some name", "me")

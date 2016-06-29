@@ -5,7 +5,7 @@ defmodule Matchup.Shared.Repository.InMemoryTest do
   alias Matchup.Shared.Repository.InMemory, as: Repository
 
   setup do
-    {:ok, artists} = Repository.start_link(:artists)
+    {:ok, artists} = Repository.start_link
     :ok = Repository.clear(artists)
 
     john =  %{"name" => "John Lennon", "band" => "Beatles"}

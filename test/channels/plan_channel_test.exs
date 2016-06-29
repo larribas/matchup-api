@@ -2,29 +2,34 @@ defmodule Matchup.PlanChannelTest do
   use Matchup.ChannelCase
 
   setup do
+    Matchup.Shared.ComponentRegistry.create("dummy", Configuration.dummy)
     {:ok, _, socket} = socket("user_id", %{}) |> subscribe_and_join(Matchup.PlanChannel, "plan:dummy")
     {:ok, socket: socket}
   end
-
-  # TODO subscribing to nonexistent plan returns an error
-  # TODO subscribing to a plan broadcasts all new events
-  # TODO actions sent to a plan are forwarded to the appropriate behavior
 
   test "ping replies with status ok", %{socket: socket} do
     ref = push socket, "ping", %{"hello" => "there"}
     assert_reply ref, :ok, %{"hello" => "there"}
   end
 
-  test "queries are properly delegated", %{socket: socket} do
-    params = %{"param": "something"}
-    ref = push socket, "query:test", params
-    assert_reply ref, :ok, %{"name": "test", "params": params}
+  test "successful use cases are properly delegated", %{socket: socket} do
+    params = %{"answer" => "something"}
+    ref = push socket, "use_case:success", params
+    assert_reply ref, :ok, params
   end
 
-  test "commands are properly delegated", %{socket: socket} do
-    params = %{"param": "something"}
-    ref = push socket, "command:test", params
-    assert_broadcast "test", params
+  test "successful use cases with events are properly delegated", %{socket: socket} do
+    event_params = %{"event" => "params"}
+    params = %{"answer" => "something", "events" => [Matchup.Shared.Event.new("created", event_params)]}
+    ref = push socket, "use_case:success_with_events", params
+    assert_reply ref, :ok, params
+    assert_broadcast "created", event_params
   end
 
+  test "failed use cases are properly delegated", %{socket: socket} do
+    msg = "error!"
+    ref = push socket, "use_case:error", %{"msg" => msg}
+    assert_reply ref, :error, %{"reason" => msg}
+  end
+  
 end

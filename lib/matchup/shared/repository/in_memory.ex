@@ -1,7 +1,7 @@
 defmodule Matchup.Shared.Repository.InMemory do
 
-  def start_link(collection_name) do
-    Agent.start_link(fn -> %{} end, name: collection_name)
+  def start_link do
+    Agent.start_link(fn -> %{} end)
   end
   
   def create(collection, id, data) do

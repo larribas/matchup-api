@@ -20,7 +20,6 @@ defmodule Matchup.Shared.Scheduler.InMemoryTest do
       "executed: milliseconds" -> true
     after 1000 -> false
     end
-      
 
     assert executed
   end

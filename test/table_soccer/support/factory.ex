@@ -1,4 +1,4 @@
-defmodule Matchup.TableSoccer.Support.Factory do
+defmodule Matchup.Plans.TableSoccer.Support.Factory do
   def specific_game(params \\ %{}) do
     game = %{
       "id" => UUID.uuid4,

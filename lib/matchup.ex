@@ -13,14 +13,14 @@ defmodule Matchup do
       # worker(Matchup.Worker, [arg1, arg2, arg3]),
     ]
 
-    # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
-    # for other strategies and supported options
+    # Configure component states
+    Matchup.Shared.ComponentRegistry.start
+    Matchup.Shared.ComponentRegistry.create("table_soccer", Configuration.table_soccer)
+
     opts = [strategy: :one_for_one, name: Matchup.Supervisor]
     Supervisor.start_link(children, opts)
   end
 
-  # Tell Phoenix to update the endpoint configuration
-  # whenever the application is updated.
   def config_change(changed, _new, removed) do
     Matchup.Endpoint.config_change(changed, removed)
     :ok

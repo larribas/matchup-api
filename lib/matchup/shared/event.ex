@@ -1,4 +1,4 @@
-defmodule Event do
+defmodule Matchup.Shared.Event do
   def new(type, params) do
     %{"type" => type, "params" => params}
   end

@@ -2,7 +2,10 @@ defmodule Matchup.PlanChannel do
   use Phoenix.Channel
 
   def join("plan:" <> type, _params, socket) do
-    {:ok, socket}
+    case Matchup.Shared.ComponentRegistry.lookup(type) do
+      :error -> {:error, socket}
+      _ -> {:ok, socket}
+    end
   end
 
   # Ping (for debugging reasons)
@@ -10,45 +13,22 @@ defmodule Matchup.PlanChannel do
     {:reply, {:ok, payload}, socket}
   end
 
-  # Queries are handed to the domain, validated and returned to the user
-  def handle_in("query:" <> name, payload, socket) do
-    outcome = query(socket, name, payload)
-    {:reply, outcome, socket}
-  end
-
-  # Commands are handed to the domain, validated and processed. 
-  #  - If successful, the resulting events will be broadcasted
-  #  - Otherwise, the error will be sent to the client as a one-to-one reply
-  def handle_in("command:" <> name, payload, socket) do
-    case command(socket, name, payload) do
-      {:ok, events} ->
-        for %{type: type, params: params} <- events, do: broadcast socket, type, params
-        {:noreply, socket}
+  def handle_in("use_case:" <> name, payload, socket) do
+    case use_case(socket, name, payload) do
+      {:ok, results} -> 
+        {:reply, {:ok, %{"data" => results}}, socket}
+      {:ok, result, events} ->
+        for %{"type" => type, "params" => params} <- events, do: broadcast socket, type, params
+        {:reply, {:ok, %{"data" => result}}, socket}
       {:error, msg} ->
-        {:reply, {:error, %{reason: msg}}, socket}
+        {:reply, {:error, %{"reason" => msg}}, socket}
     end
   end
 
-  def query(%{topic: "plan:" <> type}, name, payload) do
-    component = case type do
-      "table_soccer" ->
-        Matchup.TableSoccer.Queries
-      "dummy" ->
-        Matchup.Dummy.Queries
-    end
-
-    apply(component, String.to_atom(type), [payload])
-  end
-
-  def command(%{topic: "plan:" <> type}, name, payload) do
-    component = case type do
-      "table_soccer" ->
-        Matchup.TableSoccer.Commands
-      "dummy" ->
-        Matchup.Dummy.Commands
-    end
-
-    apply(component, String.to_atom(type), [payload])
+  def use_case(%{topic: "plan:" <> type}, name, payload) do
+    {:ok, component} = Matchup.Shared.ComponentRegistry.lookup(type)
+    %{use_cases: use_case} = component
+    apply(use_case, String.to_atom(name), [payload, component])
   end
 
 end
