@@ -1,7 +1,5 @@
 defmodule Matchup.Shared.Scheduler.InMemoryTest do
   use ExUnit.Case, async: true
-  use Matchup.DomainCase
-
   alias Matchup.Shared.Scheduler.InMemory, as: Scheduler
 
   def execute(pid, msg) do

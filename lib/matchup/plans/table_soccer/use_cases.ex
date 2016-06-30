@@ -1,6 +1,6 @@
 defmodule Matchup.Plans.TableSoccer.UseCases do
 
-  def search(%{} = params, %{domain: domain, repository: repository, collection: collection}) do
+  def search(%{} = params, %{repository: repository, collection: collection}) do
     games = repository.search(collection, params)
     {:ok, games}
   end
@@ -19,12 +19,16 @@ defmodule Matchup.Plans.TableSoccer.UseCases do
 
       {game, events} = game |> domain.join(username)
 
-      if length(game["players"]) == 4 do
-        {game, evs} = game |> domain.start
-        events = events ++ evs
+      {game, events} = case length(game["players"]) do
+        4 ->
+          {g, e} = game |> domain.start
 
-        # Free table automatically in 20 minutes
-        scheduler.delay(scheduler_instance, __MODULE__, :free_table, [%{"id" => id}, state], 1000 * 60 * 20)
+          # Free table automatically in 20 minutes
+          scheduler.delay(scheduler_instance, __MODULE__, :free_table, [%{"id" => id}, state], 1000 * 60 * 20)
+
+          {g, events ++ e}
+        _ ->
+          {game, events}        
       end
 
       repository.update(collection, game["id"], game)
@@ -41,9 +45,12 @@ defmodule Matchup.Plans.TableSoccer.UseCases do
 
       {game, events} = game |> domain.leave(username)
     
-      if game["players"] == [] do
-       {game, evs} = game |> Domain.finish
-       events = events ++ evs
+      {game, events} = case game["players"] do
+        [] ->
+          {g, e} = game |> domain.finish
+          {g, events ++ e}
+        _ ->
+          {game, events}
       end
 
       repository.update(collection, game["id"], game)
@@ -61,7 +68,7 @@ defmodule Matchup.Plans.TableSoccer.UseCases do
       end
 
       {game, events} = case games_being_played do
-        [game | others] -> game |> domain.finish
+        [game | _] -> game |> domain.finish
         _ -> {nil, []}
       end
 

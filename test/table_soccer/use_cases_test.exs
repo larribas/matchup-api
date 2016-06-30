@@ -29,7 +29,7 @@ defmodule Matchup.TableSoccer.UseCasesTest do
     {:ok, _, _} = UseCases.leave(%{"id" => game["id"], "username" => "Khedira"}, component)
 
     # Now the game has 2 players
-    {:ok, [game|tail]} = UseCases.search(%{}, component)
+    {:ok, [game|_]} = UseCases.search(%{}, component)
     assert_contain_exactly game["players"], ["Messi", "Mascherano"]
     assert game["status"] == "queued"
 
@@ -38,7 +38,7 @@ defmodule Matchup.TableSoccer.UseCasesTest do
 
     # Another two German players join and the game starts
     for player <- ["Neuer", "Özil"], do: {:ok, _, _} = UseCases.join(%{"id" => game["id"], "username" => player}, component)
-    {:ok, [game|t]} = UseCases.search(%{}, component)
+    {:ok, [game|_]} = UseCases.search(%{}, component)
     assert game["status"] == "playing"
 
     # We create another game and find two games when searching
@@ -51,7 +51,7 @@ defmodule Matchup.TableSoccer.UseCasesTest do
     assert games == [game]
 
     # Now we free the table and find that the game has been finished
-    {:ok, game, events} = UseCases.free_table(%{}, component)
+    {:ok, game, _} = UseCases.free_table(%{}, component)
     assert game["status"] == "finished"
     {:ok, games} = UseCases.search(%{"status" => "playing"}, component)
     assert Enum.empty?(games)

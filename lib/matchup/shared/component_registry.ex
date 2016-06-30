@@ -2,19 +2,19 @@ defmodule Matchup.Shared.ComponentRegistry do
   use GenServer
 
   def start do
-    GenServer.start_link(__MODULE__, :ok, name: ComponentRegistryInstance)
+    GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
   end
 
   def lookup(name) do
-    GenServer.call(ComponentRegistryInstance, {:lookup, name})
+    GenServer.call(__MODULE__, {:lookup, name})
   end
 
   def create(name, component) do
-    GenServer.cast(ComponentRegistryInstance, {:create, name, component})
+    GenServer.cast(__MODULE__, {:create, name, component})
   end
 
   def clear do
-    GenServer.cast(ComponentRegistryInstance, {:clear})
+    GenServer.cast(__MODULE__, {:clear})
   end
 
   ## Server Callbacks
@@ -35,7 +35,7 @@ defmodule Matchup.Shared.ComponentRegistry do
     end
   end
 
-  def handle_cast({:clear}, registry) do
+  def handle_cast({:clear}, _registry) do
     {:noreply, %{}}
   end
 

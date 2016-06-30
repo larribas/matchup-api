@@ -1,0 +1,24 @@
+version: '2'
+services:
+  api:
+    image: "larribas/matchup-api:${MATCHUP_VERSION}"
+    ports:
+      - "4000:4000"
+    volumes:
+      - .:/app
+    links:
+      - mongo
+    environment:
+      - MATCHUP_VERSION
+      - MONGODB_HOST=mongo
+      - MONGODB_USERNAME=user
+      - MONGODB_PASSWORD=supersecret
+      - MONGODB_DBNAME=matchup
+  mongo:
+    image: frodenas/mongodb
+    volumes:
+      - ${MONGODB_DATA_VOLUME}:/data
+    environment:
+      - MONGODB_USERNAME=user
+      - MONGODB_PASSWORD=supersecret
+      - MONGODB_DBNAME=matchup

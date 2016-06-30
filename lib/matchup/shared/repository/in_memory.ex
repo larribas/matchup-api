@@ -1,6 +1,6 @@
 defmodule Matchup.Shared.Repository.InMemory do
 
-  def start_link do
+  def collection(_collection_name) do
     Agent.start_link(fn -> %{} end)
   end
   

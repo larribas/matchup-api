@@ -13,23 +13,23 @@ defmodule Matchup.PlanChannelTest do
   end
 
   test "successful use cases are properly delegated", %{socket: socket} do
-    params = %{"answer" => "something"}
-    ref = push socket, "use_case:success", params
-    assert_reply ref, :ok, params
+    ref = push socket, "use_case:success", %{"answer" => "something"}
+    assert_reply ref, :ok,  %{"data" => "something"}
   end
 
   test "successful use cases with events are properly delegated", %{socket: socket} do
-    event_params = %{"event" => "params"}
-    params = %{"answer" => "something", "events" => [Matchup.Shared.Event.new("created", event_params)]}
+    params = %{
+      "answer" => "something", 
+      "events" => [Matchup.Shared.Event.new("created", %{"event" => "params"})]
+    }
     ref = push socket, "use_case:success_with_events", params
     assert_reply ref, :ok, params
-    assert_broadcast "created", event_params
+    assert_broadcast "created", %{"event" => "params"}
   end
 
   test "failed use cases are properly delegated", %{socket: socket} do
-    msg = "error!"
-    ref = push socket, "use_case:error", %{"msg" => msg}
-    assert_reply ref, :error, %{"reason" => msg}
+    ref = push socket, "use_case:error", %{"msg" => "error!"}
+    assert_reply ref, :error, %{"reason" => "error!"}
   end
   
 end

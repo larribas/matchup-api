@@ -1,11 +1,10 @@
 defmodule Matchup.Shared.ComponentRegistryTest do
   use ExUnit.Case, async: true
-  use Matchup.DomainCase
-
   alias Matchup.Shared.ComponentRegistry, as: ComponentRegistry
 
   setup do
     ComponentRegistry.start
+    ComponentRegistry.clear
     :ok
   end
 

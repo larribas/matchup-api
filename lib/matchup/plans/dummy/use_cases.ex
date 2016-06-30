@@ -1,6 +1,4 @@
-defmodule Matchup.Plans.Dummy.UseCases do
-  alias Matchup.Shared.Event, as: Event
-  
+defmodule Matchup.Plans.Dummy.UseCases do  
   def success(%{"answer" => answer}, _state) do
     {:ok, answer}
   end
@@ -12,5 +10,4 @@ defmodule Matchup.Plans.Dummy.UseCases do
   def error(%{"msg" => msg}, _state) do
     {:error, msg}
   end
-
 end

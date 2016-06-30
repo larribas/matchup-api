@@ -6,7 +6,7 @@ defmodule Matchup.DomainCase do
       def assert_throws(expected_msg, f) do
         try do
           f.()
-          refute "I shouldn't get here because something should have been thrown just before"
+          refute expected_msg
         catch
           msg -> assert msg == expected_msg
         end
